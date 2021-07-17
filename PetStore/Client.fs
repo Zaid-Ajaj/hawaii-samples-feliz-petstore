@@ -1,6 +1,7 @@
 namespace rec PetStore
 
 open Browser.Types
+open Fable.SimpleHttp
 open PetStore.Types
 open PetStore.Http
 
@@ -11,14 +12,15 @@ open PetStore.Http
 ///Some useful links:
 ///- [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
 ///- [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
-type PetStoreClient(url: string) =
+type PetStoreClient(url: string, headers: list<Header>) =
+    new(url: string) = PetStoreClient(url, [])
     ///<summary>
     ///Update an existing pet by Id
     ///</summary>
     member this.updatePet(body: Pet) =
         async {
             let requestParts = [ RequestPart.jsonContent body ]
-            let! (status, content) = OpenApiHttp.putAsync url "/pet" requestParts
+            let! (status, content) = OpenApiHttp.putAsync url "/pet" headers requestParts
             if status = 200 then
                 return UpdatePet.OK(Serializer.deserialize content)
             else if status = 400 then
@@ -35,7 +37,7 @@ type PetStoreClient(url: string) =
     member this.addPet(body: Pet) =
         async {
             let requestParts = [ RequestPart.jsonContent body ]
-            let! (status, content) = OpenApiHttp.postAsync url "/pet" requestParts
+            let! (status, content) = OpenApiHttp.postAsync url "/pet" headers requestParts
             if status = 200 then
                 return AddPet.OK(Serializer.deserialize content)
             else
@@ -52,7 +54,7 @@ type PetStoreClient(url: string) =
                 [ if status.IsSome then
                       RequestPart.query ("status", status.Value) ]
 
-            let! (status, content) = OpenApiHttp.getAsync url "/pet/findByStatus" requestParts
+            let! (status, content) = OpenApiHttp.getAsync url "/pet/findByStatus" headers requestParts
             if status = 200 then
                 return FindPetsByStatus.OK(Serializer.deserialize content)
             else
@@ -69,7 +71,7 @@ type PetStoreClient(url: string) =
                 [ if tags.IsSome then
                       RequestPart.query ("tags", tags.Value) ]
 
-            let! (status, content) = OpenApiHttp.getAsync url "/pet/findByTags" requestParts
+            let! (status, content) = OpenApiHttp.getAsync url "/pet/findByTags" headers requestParts
             if status = 200 then
                 return FindPetsByTags.OK(Serializer.deserialize content)
             else
@@ -83,7 +85,7 @@ type PetStoreClient(url: string) =
     member this.getPetById(petId: int64) =
         async {
             let requestParts = [ RequestPart.path ("petId", petId) ]
-            let! (status, content) = OpenApiHttp.getAsync url "/pet/{petId}" requestParts
+            let! (status, content) = OpenApiHttp.getAsync url "/pet/{petId}" headers requestParts
             if status = 200 then
                 return GetPetById.OK(Serializer.deserialize content)
             else if status = 400 then
@@ -107,7 +109,7 @@ type PetStoreClient(url: string) =
                   if status.IsSome then
                       RequestPart.query ("status", status.Value) ]
 
-            let! (status, content) = OpenApiHttp.postAsync url "/pet/{petId}" requestParts
+            let! (status, content) = OpenApiHttp.postAsync url "/pet/{petId}" headers requestParts
             if status = 405 then
                 return UpdatePetWithForm.MethodNotAllowed
             else
@@ -126,7 +128,7 @@ type PetStoreClient(url: string) =
                   if apiKey.IsSome then
                       RequestPart.header ("api_key", apiKey.Value) ]
 
-            let! (status, content) = OpenApiHttp.deleteAsync url "/pet/{petId}" requestParts
+            let! (status, content) = OpenApiHttp.deleteAsync url "/pet/{petId}" headers requestParts
             if status = 400 then
                 return DeletePet.BadRequest
             else
@@ -148,7 +150,7 @@ type PetStoreClient(url: string) =
                   if requestBody.IsSome then
                       RequestPart.binaryContent requestBody.Value ]
 
-            let! (status, content) = OpenApiHttp.postAsync url "/pet/{petId}/uploadImage" requestParts
+            let! (status, content) = OpenApiHttp.postAsync url "/pet/{petId}/uploadImage" headers requestParts
             return UploadFile.OK(Serializer.deserialize content)
         }
 
@@ -158,7 +160,7 @@ type PetStoreClient(url: string) =
     member this.getInventory() =
         async {
             let requestParts = []
-            let! (status, content) = OpenApiHttp.getAsync url "/store/inventory" requestParts
+            let! (status, content) = OpenApiHttp.getAsync url "/store/inventory" headers requestParts
             return GetInventory.OK(Serializer.deserialize content)
         }
 
@@ -168,7 +170,7 @@ type PetStoreClient(url: string) =
     member this.placeOrder(body: Order) =
         async {
             let requestParts = [ RequestPart.jsonContent body ]
-            let! (status, content) = OpenApiHttp.postAsync url "/store/order" requestParts
+            let! (status, content) = OpenApiHttp.postAsync url "/store/order" headers requestParts
             if status = 200 then
                 return PlaceOrder.OK(Serializer.deserialize content)
             else
@@ -184,7 +186,7 @@ type PetStoreClient(url: string) =
             let requestParts =
                 [ RequestPart.path ("orderId", orderId) ]
 
-            let! (status, content) = OpenApiHttp.getAsync url "/store/order/{orderId}" requestParts
+            let! (status, content) = OpenApiHttp.getAsync url "/store/order/{orderId}" headers requestParts
             if status = 200 then
                 return GetOrderById.OK(Serializer.deserialize content)
             else if status = 400 then
@@ -202,7 +204,7 @@ type PetStoreClient(url: string) =
             let requestParts =
                 [ RequestPart.path ("orderId", orderId) ]
 
-            let! (status, content) = OpenApiHttp.deleteAsync url "/store/order/{orderId}" requestParts
+            let! (status, content) = OpenApiHttp.deleteAsync url "/store/order/{orderId}" headers requestParts
             if status = 400 then
                 return DeleteOrder.BadRequest
             else if status = 404 then
@@ -217,7 +219,7 @@ type PetStoreClient(url: string) =
     member this.createUser(body: User) =
         async {
             let requestParts = [ RequestPart.jsonContent body ]
-            let! (status, content) = OpenApiHttp.postAsync url "/user" requestParts
+            let! (status, content) = OpenApiHttp.postAsync url "/user" headers requestParts
             return CreateUser.DefaultResponse(Serializer.deserialize content)
         }
 
@@ -227,7 +229,7 @@ type PetStoreClient(url: string) =
     member this.createUsersWithListInput(body: CreateUsersWithListInputPayload) =
         async {
             let requestParts = [ RequestPart.jsonContent body ]
-            let! (status, content) = OpenApiHttp.postAsync url "/user/createWithList" requestParts
+            let! (status, content) = OpenApiHttp.postAsync url "/user/createWithList" headers requestParts
             if status = 200 then
                 return CreateUsersWithListInput.OK(Serializer.deserialize content)
             else
@@ -247,7 +249,7 @@ type PetStoreClient(url: string) =
                   if password.IsSome then
                       RequestPart.query ("password", password.Value) ]
 
-            let! (status, content) = OpenApiHttp.getAsync url "/user/login" requestParts
+            let! (status, content) = OpenApiHttp.getAsync url "/user/login" headers requestParts
             if status = 200 then
                 return LoginUser.OK content
             else
@@ -260,7 +262,7 @@ type PetStoreClient(url: string) =
     member this.logoutUser() =
         async {
             let requestParts = []
-            let! (status, content) = OpenApiHttp.getAsync url "/user/logout" requestParts
+            let! (status, content) = OpenApiHttp.getAsync url "/user/logout" headers requestParts
             return LogoutUser.DefaultResponse
         }
 
@@ -273,7 +275,7 @@ type PetStoreClient(url: string) =
             let requestParts =
                 [ RequestPart.path ("username", username) ]
 
-            let! (status, content) = OpenApiHttp.getAsync url "/user/{username}" requestParts
+            let! (status, content) = OpenApiHttp.getAsync url "/user/{username}" headers requestParts
             if status = 200 then
                 return GetUserByName.OK(Serializer.deserialize content)
             else if status = 400 then
@@ -293,7 +295,7 @@ type PetStoreClient(url: string) =
                 [ RequestPart.path ("username", username)
                   RequestPart.jsonContent body ]
 
-            let! (status, content) = OpenApiHttp.putAsync url "/user/{username}" requestParts
+            let! (status, content) = OpenApiHttp.putAsync url "/user/{username}" headers requestParts
             return UpdateUser.DefaultResponse
         }
 
@@ -306,7 +308,7 @@ type PetStoreClient(url: string) =
             let requestParts =
                 [ RequestPart.path ("username", username) ]
 
-            let! (status, content) = OpenApiHttp.deleteAsync url "/user/{username}" requestParts
+            let! (status, content) = OpenApiHttp.deleteAsync url "/user/{username}" headers requestParts
             if status = 400 then
                 return DeleteUser.BadRequest
             else if status = 404 then

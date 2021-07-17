@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		webpack.tests.js = webpack.tests.js
 	EndProjectSection
 EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "PetStore", "PetStore\PetStore.fsproj", "{C0926B6D-7E82-4307-9C15-D4348A0F8729}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,10 @@ Global
 		{7821B727-268F-44AD-8136-B300B323F578}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7821B727-268F-44AD-8136-B300B323F578}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7821B727-268F-44AD-8136-B300B323F578}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0926B6D-7E82-4307-9C15-D4348A0F8729}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0926B6D-7E82-4307-9C15-D4348A0F8729}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0926B6D-7E82-4307-9C15-D4348A0F8729}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0926B6D-7E82-4307-9C15-D4348A0F8729}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

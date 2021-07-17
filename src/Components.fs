@@ -19,7 +19,7 @@ type Components =
             | FindPetsByStatus.BadRequest ->
                 Html.h1 "Bad request :/"
             | FindPetsByStatus.OK pets ->
-                Html.ul [ for pet in pets -> Html.li $"{pet.name}" ]
+                Html.ul [ for pet in pets -> Html.li pet.name ]
 
     [<ReactComponent>]
     static member Index() =

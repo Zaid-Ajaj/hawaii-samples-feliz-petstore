@@ -18,7 +18,7 @@ type Components =
             | FindPetsByStatus.BadRequest ->
                 Html.h1 "Bad request :/"
             | FindPetsByStatus.OK pets ->
-                Html.ul [ for pet in pets -> Html.li $"{pet.name}" ]
+                Html.ul [ for pet in pets -> Html.li pet.name ]
 ```
 
 This template gets you up and running with a simple web app using [Fable](http://fable.io/), [Elmish](https://fable-elmish.github.io/) and [Feliz](https://github.com/Zaid-Ajaj/Feliz).
